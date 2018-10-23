@@ -1,5 +1,5 @@
 --[[
-Radiant GSR Test V1.5
+Radiant GSR Test V1.6
 Credits - BattleRat
 /////License/////
 Do not reupload/re release any part of this script without my permission

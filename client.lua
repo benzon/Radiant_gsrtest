@@ -1,9 +1,16 @@
 --[[
-Radiant GSR Test V1.5
+Radiant GSR Test V1.6
 Credits - BattleRat
 /////License/////
 Do not reupload/re release any part of this script without my permission
 ]]
+
+-----------------------------CONFIG LINES--------------------------------------
+
+local toggleWaterClean = true --Set to false if you dont want water to clean off GSR from people who shot
+
+-------------------------------------------------------------------------------
+
 
 
 ESX = nil
@@ -53,6 +60,19 @@ Citizen.CreateThread(function()
       hasShot = false
       timer = 3600
       TriggerServerEvent('removeGsrRecord')
+    end
+  end
+end)
+
+Citizen.CreateThread(function()
+  while true do
+    Wait(2000)
+    if toggleWaterClean and hasShot then
+      if IsEntityInWater(GetPlayerPed(-1)) then
+        hasShot = false
+        TriggerServerEvent('removeGsrRecord')
+        TriggerEvent('gsrCleanedNotify')
+      end
     end
   end
 end)
@@ -114,6 +134,19 @@ RegisterNetEvent('noPlayerNotify')
     exports.pNotify:SetQueueMax("left", 1)
     exports.pNotify:SendNotification({
         text = "No traces of gunpowder were found",
+        type = "success",
+        timeout = 5000,
+        layout = "centerLeft",
+        queue = "left",
+        killer = true
+           })
+  end)
+
+  RegisterNetEvent('gsrCleanedNotify')
+  AddEventHandler('gsrCleanedNotify', function()
+    exports.pNotify:SetQueueMax("left", 1)
+    exports.pNotify:SendNotification({
+        text = "You hopped in the water and cleaned off the Gunshot Residue",
         type = "success",
         timeout = 5000,
         layout = "centerLeft",
