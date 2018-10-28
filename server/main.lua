@@ -37,7 +37,7 @@ RegisterServerEvent('GSR:SetGSR')
 AddEventHandler('GSR:SetGSR', function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
-    gsrData[identifier] = os.time(os.date("!*t")) + Config.GsrTime
+    gsrData[identifier] = os.time(os.date("!*t")) + Config.gsrTime
 end)
 
 function gsrcheck(source, identifier)
@@ -70,7 +70,7 @@ end
 
 function gsrTimer()
     removeGSR()
-    SetTimeout(60000, gsrTimer)
+    SetTimeout(Config.gsrAutoRemove, gsrTimer)
 end
 
 gsrTimer()

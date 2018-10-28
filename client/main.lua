@@ -1,6 +1,5 @@
 ESX = nil
 local hasShot = false
-local timer = Config.GsrTime
 
 Citizen.CreateThread(function()
     while ESX == nil do
@@ -25,7 +24,7 @@ Citizen.CreateThread(function()
         if IsPedShooting(ped) then
             TriggerServerEvent('GSR:SetGSR', timer)
             hasShot = true
-            Citizen.Wait(60000)
+            Citizen.Wait(Config.gsrUpdate)
         end
     end
 end)
@@ -37,7 +36,7 @@ Citizen.CreateThread(function()
             ped = GetPlayerPed(-1)
             if IsEntityInWater(ped) then
                 TriggerEvent('GSR:Notify', _U('gsr_clean_wait'), "error")
-                Citizen.Wait(30000)
+                Citizen.Wait(Config.waterCleanTime)
                 if IsEntityInWater(ped) then
                     hasShot = false
                     TriggerServerEvent('GSR:Remove')
@@ -74,7 +73,7 @@ end
 
 function updateStatus()   
     status()
-    SetTimeout(300000, updateStatus)
+    SetTimeout(Config.gsrUpdateStatus, updateStatus)
 end
 
 updateStatus()
