@@ -4,7 +4,8 @@
 
 **Requirements**  
 [es_extended](https://github.com/ESX-Org/es_extended)  
-[pNotify](https://github.com/Nick78111/pNotify)
+[pNotify](https://github.com/Nick78111/pNotify)  
+[mysql-async v3.x.x](https://github.com/brouznouf/fivem-mysql-async)
 
 **Description**  
 This script will allow players with the "police" job to run a GSR (gun shot residue) test to see if a player has shot a gun within a certain amount of time.
