@@ -1,14 +1,12 @@
 # Radiant GSR Test - v1.7
-**Version:** 1.7
-
+**Version:** 1.7  
 **Created by:** BattleRat for Radiant RP
 
-**Requirements**
-[es_extended](https://github.com/ESX-Org/es_extended)
+**Requirements**  
+[es_extended](https://github.com/ESX-Org/es_extended)  
 [pNotify](https://github.com/Nick78111/pNotify)
 
-**Description**
-
+**Description**  
 This script will allow players with the "police" job to run a GSR (gun shot residue) test to see if a player has shot a gun within a certain amount of time.
 
 **Features**
