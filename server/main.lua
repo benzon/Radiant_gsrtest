@@ -28,10 +28,8 @@ RegisterNetEvent("GSR:Remove")
 AddEventHandler("GSR:Remove", function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
-    for k, v in pairs(gsrData) do
-        if v <= os.time(os.date("!*t")) then
-            gsrData[identifier] = nil
-        end
+    if gsrData[identifier] ~= nil then
+        gsrData[identifier] = nil
     end
 end)
 
