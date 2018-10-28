@@ -1,6 +1,6 @@
-ESX             = nil
-local hasShot   = false
-local timer     = Config.GsrTime
+ESX = nil
+local hasShot = false
+local timer = Config.GsrTime
 
 Citizen.CreateThread(function()
     while ESX == nil do
@@ -15,35 +15,17 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 end)
 
 Citizen.CreateThread(function()
-    TriggerEvent('chat:addSuggestion', '/gsr',  _U('help_gsr'),  {{name=_U('help_gsr_value'), help=_U('help_gsr')}})
+    TriggerEvent('chat:addSuggestion', '/gsr', _U('help_gsr'), {{name = _U('help_gsr_value'), help = _U('help_gsr')}})
 end)
 
 Citizen.CreateThread(function()
     while true do
-        Wait(0)
-        if IsPedShooting(GetPlayerPed(-1)) and not (hasShot) then
+        Citizen.Wait(0)
+        ped = GetPlayerPed(-1)
+        if IsPedShooting(ped) then
+            TriggerServerEvent('GSR:SetGSR', timer)
             hasShot = true
-            TriggerServerEvent('addGsrRecord', timer)
-        elseif IsPedShooting(GetPlayerPed(-1)) and (hasShot) then
-            hasShot = true
-            timer = Config.GsrTime
-            TriggerServerEvent('timeUpdate', timer)
-        end
-    end
-end)
-
-Citizen.CreateThread(function()
-    while true do
-        Wait(0)
-        if (hasShot) and timer > 0 then
-            timer = timer - 0.1
-            timecheck(timer)
-        end
-        
-        if timer <= 1 and (hasShot) then
-            hasShot = false
-            timer = Config.GsrTime
-            TriggerServerEvent('removeGsrRecord')
+            Citizen.Wait(60000)
         end
     end
 end)
@@ -52,22 +34,21 @@ Citizen.CreateThread(function()
     while true do
         Wait(2000)
         if Config.waterClean and hasShot then
-            if IsEntityInWater(GetPlayerPed(-1)) then
-                hasShot = false
-                TriggerServerEvent('removeGsrRecord')
-                TriggerEvent('GSR:Notify', _U('gsr_cleaned'), "success")
+            ped = GetPlayerPed(-1)
+            if IsEntityInWater(ped) then
+                TriggerEvent('GSR:Notify', _U('gsr_clean_wait'), "error")
+                Citizen.Wait(30000)
+                if IsEntityInWater(ped) then
+                    hasShot = false
+                    TriggerServerEvent('GSR:Remove')
+                    TriggerEvent('GSR:Notify', _U('gsr_cleaned'), "success")
+                else
+                    TriggerEvent('GSR:Notify', _U('gsr_clean_failed'), "error")
+                end
             end
         end
     end
 end)
-
-function timecheck(time)
-    if time < 3600 and time > 3500 then
-        TriggerServerEvent('timeUpdate', time)
-    elseif time < 100 then
-        TriggerServerEvent('timeUpdate', time)
-    end
-end
 
 RegisterNetEvent('GSR:Notify')
 AddEventHandler('GSR:Notify', function(text, type)
@@ -80,3 +61,20 @@ AddEventHandler('GSR:Notify', function(text, type)
         queue = "left",
     })
 end)
+
+function status()
+    if hasShot then
+        ESX.TriggerServerCallback('GSR:Status', function(cb)
+            if not cb then
+                hasShot = false
+            end
+        end)
+    end
+end
+
+function updateStatus()   
+    status()
+    SetTimeout(300000, updateStatus)
+end
+
+updateStatus()

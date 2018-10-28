@@ -1,15 +1,12 @@
 ESX = nil
+gsrData = {}
 
--- ESX base
 TriggerEvent('esx:getSharedObject', function(obj)ESX = obj end)
 
--- GSR Command
 TriggerEvent('es:addCommand', 'gsr', function(source, args, user)
-    Source = source
-    
+    local Source = source
     local xPlayer = ESX.GetPlayerFromId(Source)
     local number = tonumber(args[1])
-    
     if args[1] ~= nil and xPlayer.job.name == 'police' and type(number) == "number" then
         CancelEvent()
         local identifier = GetPlayerIdentifiers(number)[1]
@@ -17,64 +14,65 @@ TriggerEvent('es:addCommand', 'gsr', function(source, args, user)
             gsrcheck(source, identifier)
         end
     end
-
 end)
 
 AddEventHandler('esx:playerDropped', function(source)
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
-    MySQL.Async.execute("DELETE FROM gsr WHERE identifier = @identifier",
-        {
-            ['@identifier'] = identifier,
-        })
+    if gsrData[identifier] ~= nil then
+        gsrData[identifier] = nil
+    end
 end)
 
--- Database Calls
-MySQL.ready(function()
-    MySQL.Async.execute('DELETE FROM gsr', {})
-end)
-
-RegisterNetEvent("removeGsrRecord")
-AddEventHandler("removeGsrRecord", function()
+RegisterNetEvent("GSR:Remove")
+AddEventHandler("GSR:Remove", function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
-    MySQL.Async.execute("DELETE FROM gsr WHERE identifier = @identifier",
-        {
-            ['@identifier'] = identifier,
-        })
+    for k, v in pairs(gsrData) do
+        if v <= os.time(os.date("!*t")) then
+            gsrData[identifier] = nil
+        end
+    end
 end)
 
-RegisterServerEvent('addGsrRecord')
-AddEventHandler('addGsrRecord', function(timer)
+RegisterServerEvent('GSR:SetGSR')
+AddEventHandler('GSR:SetGSR', function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
-    local time = timer
-    MySQL.Async.execute("INSERT INTO gsr ( identifier, time) VALUES (@identifier, @time)",
-        {
-            ['@identifier'] = identifier,
-            ['@time'] = time
-        })
-end)
-
-RegisterServerEvent("timeUpdate")
-AddEventHandler("timeUpdate", function(time)
-    local Source = source
-    local identifier = GetPlayerIdentifiers(Source)[1]
-    MySQL.Async.execute("UPDATE gsr SET time=@time WHERE identifier=@identifier",
-        {
-            ['@time'] = time,
-            ['@identifier'] = identifier
-        })
+    gsrData[identifier] = os.time(os.date("!*t")) + Config.GsrTime
 end)
 
 function gsrcheck(source, identifier)
     local Source = source
     local identifier = identifier
-    MySQL.Async.fetchAll('SELECT * FROM gsr WHERE identifier=@identifier', {['@identifier'] = identifier}, function(gotInfo)
-        if gotInfo[1] ~= nil then
-            TriggerClientEvent('GSR:Notify', Source, _U('gsr_positive'), "error")
-        else
-            TriggerClientEvent('GSR:Notify', Source, _U('gsr_negative'), "success")
-        end
-    end)
+    if gsrData[identifier] ~= nil then
+        TriggerClientEvent('GSR:Notify', Source, _U('gsr_positive'), "error")
+    else
+        TriggerClientEvent('GSR:Notify', Source, _U('gsr_negative'), "success")
+    end
 end
+
+ESX.RegisterServerCallback('GSR:Status', function(source, cb)
+    local Source = source
+    local identifier = GetPlayerIdentifiers(Source)[1]
+    if gsrData[identifier] ~= nil then
+        cb(true)
+    else
+        cb(false)
+    end
+end)
+
+function removeGSR()
+    for k, v in pairs(gsrData) do
+        if v <= os.time(os.date("!*t")) then
+            gsrData[k] = nil
+        end
+    end
+end
+
+function gsrTimer()
+    removeGSR()
+    SetTimeout(60000, gsrTimer)
+end
+
+gsrTimer()
