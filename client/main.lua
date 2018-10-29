@@ -69,11 +69,7 @@ function status()
             end
         end)
     end
+    SetTimeout(Config.gsrUpdateStatus, status)
 end
 
-function updateStatus()   
-    status()
-    SetTimeout(Config.gsrUpdateStatus, updateStatus)
-end
-
-updateStatus()
+status()
