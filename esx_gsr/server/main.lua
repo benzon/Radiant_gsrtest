@@ -24,8 +24,8 @@ AddEventHandler('esx:playerDropped', function(source)
     end
 end)
 
-RegisterNetEvent("GSR:Check")
-AddEventHandler("GSR:Check", function(player)
+RegisterNetEvent("esx_gsr:Check")
+AddEventHandler("esx_gsr:Check", function(player)
     local Source = source
     local xPlayer = ESX.GetPlayerFromId(Source)
     local identifier = GetPlayerIdentifiers(player)[1]
@@ -34,8 +34,8 @@ AddEventHandler("GSR:Check", function(player)
     end
 end)
 
-RegisterNetEvent("GSR:Remove")
-AddEventHandler("GSR:Remove", function()
+RegisterNetEvent("esx_gsr:Remove")
+AddEventHandler("esx_gsr:Remove", function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
     if gsrData[identifier] ~= nil then
@@ -43,8 +43,8 @@ AddEventHandler("GSR:Remove", function()
     end
 end)
 
-RegisterServerEvent('GSR:SetGSR')
-AddEventHandler('GSR:SetGSR', function()
+RegisterServerEvent('esx_gsr:SetGSR')
+AddEventHandler('esx_gsr:SetGSR', function()
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
     gsrData[identifier] = os.time(os.date("!*t")) + Config.gsrTime
@@ -54,13 +54,13 @@ function gsrcheck(source, identifier)
     local Source = source
     local identifier = identifier
     if gsrData[identifier] ~= nil then
-        TriggerClientEvent('GSR:Notify', Source, _U('gsr_positive'), "error")
+        TriggerClientEvent('esx_gsr:Notify', Source, _U('gsr_positive'), "error")
     else
-        TriggerClientEvent('GSR:Notify', Source, _U('gsr_negative'), "success")
+        TriggerClientEvent('esx_gsr:Notify', Source, _U('gsr_negative'), "success")
     end
 end
 
-ESX.RegisterServerCallback('GSR:Status', function(source, cb)
+ESX.RegisterServerCallback('esx_gsr:Status', function(source, cb)
     local Source = source
     local identifier = GetPlayerIdentifiers(Source)[1]
     if gsrData[identifier] ~= nil then

@@ -22,7 +22,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         ped = GetPlayerPed(-1)
         if IsPedShooting(ped) then
-            TriggerServerEvent('GSR:SetGSR', timer)
+            TriggerServerEvent('esx_gsr:SetGSR', timer)
             hasShot = true
             Citizen.Wait(Config.gsrUpdate)
         end
@@ -35,22 +35,22 @@ Citizen.CreateThread(function()
         if Config.waterClean and hasShot then
             ped = GetPlayerPed(-1)
             if IsEntityInWater(ped) then
-                TriggerEvent('GSR:Notify', _U('gsr_clean_wait'), "error")
+                TriggerEvent('esx_gsr:Notify', _U('gsr_clean_wait'), "error")
                 Citizen.Wait(Config.waterCleanTime)
                 if IsEntityInWater(ped) then
                     hasShot = false
-                    TriggerServerEvent('GSR:Remove')
-                    TriggerEvent('GSR:Notify', _U('gsr_cleaned'), "success")
+                    TriggerServerEvent('esx_gsr:Remove')
+                    TriggerEvent('esx_gsr:Notify', _U('gsr_cleaned'), "success")
                 else
-                    TriggerEvent('GSR:Notify', _U('gsr_clean_failed'), "error")
+                    TriggerEvent('esx_gsr:Notify', _U('gsr_clean_failed'), "error")
                 end
             end
         end
     end
 end)
 
-RegisterNetEvent('GSR:Notify')
-AddEventHandler('GSR:Notify', function(text, type)
+RegisterNetEvent('esx_gsr:Notify')
+AddEventHandler('esx_gsr:Notify', function(text, type)
     exports.pNotify:SetQueueMax("left", 1)
     exports.pNotify:SendNotification({
         text = text,
@@ -63,7 +63,7 @@ end)
 
 function status()
     if hasShot then
-        ESX.TriggerServerCallback('GSR:Status', function(cb)
+        ESX.TriggerServerCallback('esx_gsr:Status', function(cb)
             if not cb then
                 hasShot = false
             end
