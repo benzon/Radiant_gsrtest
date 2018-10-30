@@ -1,5 +1,5 @@
 ESX = nil
-gsrData = {}
+local gsrData = {}
 
 TriggerEvent('esx:getSharedObject', function(obj)ESX = obj end)
 
@@ -21,6 +21,16 @@ AddEventHandler('esx:playerDropped', function(source)
     local identifier = GetPlayerIdentifiers(Source)[1]
     if gsrData[identifier] ~= nil then
         gsrData[identifier] = nil
+    end
+end)
+
+RegisterNetEvent("GSR:Check")
+AddEventHandler("GSR:Check", function(player)
+    local Source = source
+    local xPlayer = ESX.GetPlayerFromId(Source)
+    local identifier = GetPlayerIdentifiers(player)[1]
+    if identifier ~= nil and xPlayer.job.name == 'police' then
+        gsrcheck(source, identifier)
     end
 end)
 
