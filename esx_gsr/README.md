@@ -1,5 +1,5 @@
-# ESX_GSR - v1.0
-**Version:** 1.0
+# ESX_GSR - v1.1
+**Version:** 1.1
 **Created by:** BZNDK
 
 **Requirements esx_gsr**
