@@ -82,8 +82,9 @@ end
 
 ## Legal
 Radiant_gsrtest - Radiant GSR Test
+esx_gsr - GSR Test
 
-Copyright (C) 2015-2018 BattleRattt
+Copyright (C) 2015-2018 BattleRattt and BenZoN
 
 This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
 
