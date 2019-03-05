@@ -1,6 +1,6 @@
 # ESX_GSR - v1.1
 **Version:** 1.1
-**Created by:** BZNDK
+**Created by:** BenZoN for DanishRP
 
 **Requirements esx_gsr**
 [es_extended](https://github.com/ESX-Org/es_extended)
